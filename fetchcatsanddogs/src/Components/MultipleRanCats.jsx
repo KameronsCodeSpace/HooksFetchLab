@@ -1,67 +1,52 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../App.css';
 
-class MultipleRanCats extends Component {
-    constructor() {
-        super();
-        this.initialState = {
-            urls: [],
-            number: 1
-        }
-        this.state = this.initialState
-    }
+const MultipleRanCats = () => {
+    const [urls, setImage] = useState([]);
+    const [number, setNumber] = useState(1);
 
-    componentDidMount() {
-        this.getCatPictures()
-    }
-
-    selectNewNumber = (event) => {
-        const newNumber = event.target.value
-        this.setState({
-            number: newNumber
-        })
-        console.log('Current Number', newNumber)
-    }
-
-    handleNewCatButton = () => {
-        const { number } = this.state
-        this.getCatPictures(number)
-    }
-
-    getCatPictures = (number) => {
+    const getCatPictures = (number) => {
 
         let catAPIURL = `https://api.thecatapi.com/v1/images/search?limit=${number}`;
 
         axios
             .get(catAPIURL)
             .then(({ data }) => {
-                console.log( data )
+                console.log(data)
 
-                this.setState({
-                    urls: data,
-                })
+                setImage(data)
+
             })
             .catch((error) => {
                 console.log('ERROR', error)
             })
     }
 
+    useEffect(() => {
+        getCatPictures();
+    }, [])
 
-    render() {
-        const { urls, number } = this.state
-        console.log('These Are Urls', urls)
+    const selectNewNumber = (event) => {
+        setNumber(event.target.value)
+
+        console.log('Current Number', number)
+    }
+
+    const handleNewCatButton = () => {
+        getCatPictures(number)
+    }
+
         return (
             <div className="App">
                 <h1>Multiple Random Cats</h1>
 
                 <br />
 
-                <input type="number" min="1" max="10" onChange={this.selectNewNumber} value={number} />
+                <input type="number" min="1" max="10" onChange={selectNewNumber} value={number} />
 
                 <br />
                 <br />
-                <button onClick={this.handleNewCatButton}>New Cats</button>
+                <button onClick={handleNewCatButton}>New Cats</button>
                 <br />
                 <br />
 
@@ -73,6 +58,5 @@ class MultipleRanCats extends Component {
             </div>
         );
     }
-}
 
 export default MultipleRanCats;
