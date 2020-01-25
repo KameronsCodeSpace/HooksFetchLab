@@ -1,38 +1,16 @@
-// import React from 'react';
-// import '../App.css';
-
-// function RandomCat() {
-//     return (
-//         <div>
-//             <h1>Random Cat</h1>
-//         </div>
-//     );
-// }
-
-// export default RandomCat;
-
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../App.css';
 
-class RandomCat extends Component {
-    constructor() {
-        super();
-        this.initialState = {
-            url: []
-        }
-        this.state = this.initialState
+const RandomCat =() => {
+
+    const [url, setImage] = useState('');
+
+    const handleNewCatButton = () => {
+        getCatPicture();
     }
 
-    componentDidMount() {
-        this.getCatPicture();
-    }
-
-    handleNewCatButton = () => {
-        this.getCatPicture();
-    }
-
-    getCatPicture = () => {
+    const getCatPicture = () => {
 
         let catAPIURL = `https://api.thecatapi.com/v1/images/search`;
 
@@ -41,17 +19,18 @@ class RandomCat extends Component {
             .then(({ data }) => {
                 console.log(data[0].url)
 
-                this.setState({
-                    url: data[0].url,
-                })
+                setImage(data[0].url)
             })
             .catch((error) => {
                 console.log('ERROR', error)
             })
     }
 
-    render() {
-        const { url } = this.state
+
+
+    useEffect(() => {
+        getCatPicture();
+    }, [])
 
         return (
             <div className="App">
@@ -59,7 +38,7 @@ class RandomCat extends Component {
 
                 <br />
 
-                <button onClick={this.handleNewCatButton}>New Cat</button>
+                <button onClick={handleNewCatButton}>New Cat</button>
 
                 <br />
                 <br />
@@ -69,5 +48,4 @@ class RandomCat extends Component {
             </div>
         )
     }
-}
 export default RandomCat;
